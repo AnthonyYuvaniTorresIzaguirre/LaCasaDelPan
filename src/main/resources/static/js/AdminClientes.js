@@ -136,6 +136,10 @@ async function agregarCliente() {
 
 // Función para guardar el cliente
 async function guardarCliente() {
+      const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    
+    
     const cliente = {
         nombreCli: document.getElementById('username').value.trim(),
         apellidosCli: document.getElementById('lastname').value.trim(),
@@ -156,7 +160,10 @@ async function guardarCliente() {
     try {
         const response = await fetch('/clientes/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+         headers: { 
+        'Content-Type': 'application/json',
+        [header]: token  // Aquí envías el token CSRF
+            },
             body: JSON.stringify(cliente)
         });
 
@@ -259,6 +266,10 @@ async function editarCliente(id) {
 
     // Función para actualizar el cliente
     async function actualizarCliente(id) {
+          const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    
+    
     const cliente = {
         nombreCli: document.getElementById('username').value.trim(),
         apellidosCli: document.getElementById('lastname').value.trim(),
@@ -279,8 +290,11 @@ async function editarCliente(id) {
     try {
         const response = await fetch(`/clientes/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(cliente)
+            headers: {
+        'Content-Type': 'application/json',
+        [header]: token
+         },
+         body: JSON.stringify(cliente)
         });
 
         if (response.ok) {
@@ -301,11 +315,18 @@ async function editarCliente(id) {
 
 
 function borrarCliente(id) {
+      const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    
+    
     console.log('ID Cliente a borrar:', id);  // Verifica el ID en la consola
 
-    fetch(`/clientes/${id}`, {
-        method: 'DELETE',
-    })
+   fetch(`/clientes/${id}`, {
+    method: 'DELETE',
+    headers: {
+        [header]: token
+    }
+})
     .then(response => {
         if (response.ok) {
             alert('Cliente eliminado');

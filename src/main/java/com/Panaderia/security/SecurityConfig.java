@@ -4,6 +4,7 @@ import com.Panaderia.Servicios.ClientesUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,12 +27,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                
                 .authorizeHttpRequests(auth -> auth
                 // Páginas públicas
                 .requestMatchers("/", "/inicio", "/listapanes", "/listatortas", "/listabocaditos","/listakekes","/listasalados","/preguntasfrecuentes", "/css/**", "/js/**", "/img/**", "/registro", "/login").permitAll()
                 // Rutas que requieren usuario autenticado
-                .requestMatchers("/carritocompras","/pedido","/RegistroPedido","/cliente/**", "/compras/**").hasRole("USER")
+                .requestMatchers("/carritocompras","/pedido","/RegistroPedido", "/compras/**").hasRole("USER")
                 
+                            
+                         
+                        
+                .requestMatchers(HttpMethod.POST, "/clientes/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/clientes/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/clientes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/clientes/**").hasRole("ADMIN")
+                        
+                        
                 .requestMatchers("/reclamos", "/Nuevo").authenticated()
 
                 // Rutas exclusivas para admin

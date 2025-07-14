@@ -102,6 +102,38 @@
             <version>6.4.5</version>
             <type>jar</type>
         </dependency>
+        
+          <!--Generar archivos pdf-->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.2.3</version>
+            <type>jar</type>
+        </dependency>
+        <!--Generar archivos pdf-->
+
+        <!--Generar archivos excel-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.4.1</version>
+            <type>jar</type>
+        </dependency>
+                
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.4.1</version>
+        </dependency>
+        <!--Generar archivos excel-->
+        
+        
     </dependencies>
 
     <build>
