@@ -20,45 +20,68 @@
 
         <!-- Formulario que envía a /registro POST -->
         <form th:action="@{/registro}" th:object="${registerDto}" method="post" novalidate>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" th:field="*{nombreCli}" class="form-control" placeholder="Nombre" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" th:field="*{nombreCli}" class="form-control" placeholder="Nombre" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('nombreCli')}" th:errors="*{nombreCli}"></div>
             </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" th:field="*{apellidosCli}" class="form-control" placeholder="Apellidos" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" th:field="*{apellidosCli}" class="form-control" placeholder="Apellidos" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('apellidosCli')}" th:errors="*{apellidosCli}"></div>
             </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" th:field="*{correo}" class="form-control" placeholder="Correo Electrónico" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" th:field="*{correo}" class="form-control" placeholder="Correo Electrónico" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
             </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                <input type="text" th:field="*{dni}" class="form-control" placeholder="DNI" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                    <input type="text" th:field="*{dni}" class="form-control" placeholder="DNI" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
             </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                <input type="text" th:field="*{direccion}" class="form-control" placeholder="Dirección" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    <input type="text" th:field="*{direccion}" class="form-control" placeholder="Dirección" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
             </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input type="text" th:field="*{telefono}" class="form-control" placeholder="Teléfono" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    <input type="text" th:field="*{telefono}" class="form-control" placeholder="Teléfono" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
             </div>
 
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-key"></i></span>
-                <input type="password" th:field="*{contraseña}" class="form-control" placeholder="Contraseña" required />
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                    <input type="password" th:field="*{contraseña}" class="form-control" placeholder="Contraseña" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('contraseña')}" th:errors="*{contraseña}"></div>
             </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-key"></i></span>
-                <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="Confirmar Contraseña" required />
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                    <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="Confirmar Contraseña" required />
+                </div>
                 <div class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
             </div>
 
