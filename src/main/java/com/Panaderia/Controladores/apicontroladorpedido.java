@@ -28,7 +28,7 @@ public class apicontroladorpedido {
 
     @GetMapping("/listar")
     public List<PedidoDTO> listarPedidos() {
-        return pedidoServicio.listarPedidos();
+        return pedidoServicio.listarPedidos();       
     }
 
     @GetMapping("/{id}")
