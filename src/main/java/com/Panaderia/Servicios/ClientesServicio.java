@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -20,6 +21,9 @@ public class ClientesServicio {
 
     @Autowired
     private RolRepositorio rolRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public void asignarRolACliente(Integer clienteId, String rolNombre) {
@@ -38,6 +42,8 @@ public class ClientesServicio {
     }
 
     public void agregarCliente(Clientes cliente) {
+          String passwordEncriptada = passwordEncoder.encode(cliente.getContraseña());
+    cliente.setContraseña(passwordEncriptada);
         clienteRepository.save(cliente); // Guarda el cliente en la base de datos
     }
 

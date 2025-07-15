@@ -15,4 +15,6 @@ public interface ProductoServicio {
     List<Producto> buscar(String texto);
     List<Producto> buscarPorTextoYCategoria(String texto, String categoria);
     
+    
+     boolean estaEnPedido(Long idProducto);
 }

@@ -2,6 +2,7 @@ package com.Panaderia.Servicios;
 
 import com.Panaderia.dao.ProductoDAO;
 import com.Panaderia.Modelo.Producto;
+import com.Panaderia.Repositorio.PedidoRepositorio;
 import com.Panaderia.dao.ProductoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,14 @@ public class ProductoServicioImpl implements ProductoServicio {
     private ProductoDAO productoDAO;
     @Autowired
     private ProductoRepositorio productoRepositorio;
+    @Autowired
+    private PedidoRepositorio pedidoRepositorio;    
 
+    @Override
+    public boolean estaEnPedido(Long idProducto) {
+    return pedidoRepositorio.existeProductoEnPedidos(idProducto);
+        }
+    
     @Transactional
     @Override
     public List<Producto> get() {

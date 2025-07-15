@@ -1,7 +1,11 @@
 package com.Panaderia.security;
 
+import com.Panaderia.Modelo.Clientes;
+import com.Panaderia.Repositorio.ClientesRepositorio;
 import com.Panaderia.Servicios.ClientesUserDetailsService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final ClientesUserDetailsService userDetailsService;
+    
 
     public SecurityConfig(ClientesUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -23,7 +28,12 @@ public class SecurityConfig {
 
     @Autowired
     private CustomLoginSuccessHandler successHandler;
+    
+     @Autowired
+    private ClientesRepositorio ClienteRepositorio;
 
+    
+       
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -76,4 +86,22 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+    
+    @Bean
+    public CommandLineRunner encryptPasswords() {
+    return args -> {
+        List<Clientes> clientes = ClienteRepositorio.findAll();
+
+        for (Clientes cliente : clientes) {
+            String rawPassword = cliente.getContraseña(); 
+            if (!rawPassword.startsWith("$2a$")) { 
+                String encrypted = passwordEncoder().encode(rawPassword);
+                //cliente.setPass(rawPassword);(encrypted);
+                cliente.setContraseña(encrypted);
+                ClienteRepositorio.save(cliente);
+            }
+        }
+    };
+    }
+
 }

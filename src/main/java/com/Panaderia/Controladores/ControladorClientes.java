@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/clientes")
@@ -23,6 +24,8 @@ public class ControladorClientes {
      @Autowired
     private ClientesRepositorio ClientesRepository;
     
+     @Autowired
+private PasswordEncoder passwordEncoder;
     
       @GetMapping("/")
 public List<ClientesDTO> listarClientes() {
@@ -52,15 +55,31 @@ public ResponseEntity<ClientesDTO> obtenerCliente(@PathVariable Integer id) {
 
 
 @PutMapping("/{id}")
-public ResponseEntity<String> editarCliente(@PathVariable Integer id, @RequestBody Clientes cliente) {
-    Optional<Clientes> clienteExistente = ClientesRepository.findById(id);
-    if (clienteExistente.isPresent()) {
-        cliente.setIdCli(id); // Aseguramos que el cliente mantiene el mismo ID
-        clienteService.agregarCliente(cliente); // Reutilizamos el método de agregar para guardar el cliente
-        return ResponseEntity.ok("Cliente actualizado con éxito");
-    } else {
+public ResponseEntity<String> editarCliente(@PathVariable Integer id, @RequestBody Clientes clienteActualizado) {
+    Optional<Clientes> clienteExistenteOpt = ClientesRepository.findById(id);
+
+    if (clienteExistenteOpt.isEmpty()) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
     }
+
+    Clientes clienteExistente = clienteExistenteOpt.get();
+
+    
+    clienteExistente.setNombreCli(clienteActualizado.getNombreCli());
+    clienteExistente.setApellidosCli(clienteActualizado.getApellidosCli());
+    clienteExistente.setCorreo(clienteActualizado.getCorreo());
+    clienteExistente.setDni(clienteActualizado.getDni());
+    clienteExistente.setDireccion(clienteActualizado.getDireccion());
+    clienteExistente.setTelefono(clienteActualizado.getTelefono());
+
+    //encriptar contraseña si es nueva
+    if (clienteActualizado.getContraseña() != null && !clienteActualizado.getContraseña().isBlank()) {
+        String nuevaEncriptada = passwordEncoder.encode(clienteActualizado.getContraseña());
+        clienteExistente.setContraseña(nuevaEncriptada);
+}
+
+    ClientesRepository.save(clienteExistente);
+    return ResponseEntity.ok("Cliente actualizado con éxito");
 }
 
     
