@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS pedido_item (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+
 INSERT INTO producto (nombre, descripcion, precio, stock, imagen, categoria) VALUES
 ('Petipan con pollo', 'Disponible de Lunes a Sábado.', 1, 100, 'https://bonpanperu.com/wp-content/uploads/2023/10/petipan-con-pollo-80-web-1.jpg', 'Bocaditos'),
 ('Alfajorcitos', 'Disponible de Lunes a Sábado.', 1, 100, 'https://bonpanperu.com/wp-content/uploads/2023/10/Alfajorico-50.00-el-ciento-t-1.jpg', 'Bocaditos'),
