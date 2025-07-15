@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -97,11 +99,17 @@ public class ControladorAdminProductos {
         return "adminproductos_form";
     }
 
-    @GetMapping("/adminproductos/eliminar/{id}")
-    public String eliminarProducto(@PathVariable Long id) {
-        productoServicio.delete(id);
-        return "redirect:/adminproductos";
+    @DeleteMapping("/adminproductos/eliminar/{id}")
+@ResponseBody
+public ResponseEntity<String> eliminarProducto(@PathVariable Long id) {
+    if (productoServicio.estaEnPedido(id)) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body("El producto está siendo utilizado en un pedido y no puede ser eliminado.");
     }
+
+    productoServicio.delete(id);
+    return ResponseEntity.ok("Producto eliminado correctamente.");
+}
 
     @GetMapping("/listapanes")
     public String listaPanes(Model modelo) {

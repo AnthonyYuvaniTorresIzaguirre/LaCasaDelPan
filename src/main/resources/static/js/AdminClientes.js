@@ -236,7 +236,7 @@ async function editarCliente(id) {
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-3">
                                     <label for="password" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" value="${cliente.contraseña}" required>
+                                    <input type="password" class="form-control" id="password" placeholder="Dejar vacío si no se cambia">
                                 </div>
                             </div>
 
@@ -268,24 +268,34 @@ async function editarCliente(id) {
     async function actualizarCliente(id) {
           const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const nuevaContra = document.getElementById('password').value.trim();
     
-    
-    const cliente = {
-        nombreCli: document.getElementById('username').value.trim(),
-        apellidosCli: document.getElementById('lastname').value.trim(),
-        correo: document.getElementById('email').value.trim(),
-        dni: document.getElementById('dni').value.trim(),
-        direccion: document.getElementById('direccion').value.trim(),
-        telefono: document.getElementById('telefono').value.trim(),
-        contraseña: document.getElementById('password').value.trim()
-    };
+   const cliente = {
+    nombreCli: document.getElementById('username').value.trim(),
+    apellidosCli: document.getElementById('lastname').value.trim(),
+    correo: document.getElementById('email').value.trim(),
+    dni: document.getElementById('dni').value.trim(),
+    direccion: document.getElementById('direccion').value.trim(),
+    telefono: document.getElementById('telefono').value.trim(),
+        };
+
+    // Solo incluye la contraseña si se escribió algo nuevo
+        if (nuevaContra) {
+    cliente.contraseña = nuevaContra;
+            }
 
     // Validación de campos
-    if (!cliente.nombreCli || !cliente.apellidosCli || !cliente.correo || !cliente.dni || !cliente.direccion || !cliente.telefono || !cliente.contraseña) {
-        alert("¡Error! Todos los campos son obligatorios.");
-        return;
-    }
-
+   if (
+    !cliente.nombreCli || 
+    !cliente.apellidosCli || 
+    !cliente.correo || 
+    !cliente.dni || 
+    !cliente.direccion || 
+    !cliente.telefono
+        ) {
+    alert("¡Error! Todos los campos son obligatorios, excepto la contraseña si no deseas cambiarla.");
+    return;
+        }
     // Enviar los datos al backend para actualizar el cliente
     try {
         const response = await fetch(`/clientes/${id}`, {

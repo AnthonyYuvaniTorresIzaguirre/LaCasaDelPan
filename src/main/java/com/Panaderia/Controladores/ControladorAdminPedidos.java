@@ -4,6 +4,7 @@ import com.Panaderia.Modelo.Pedido;
 import com.Panaderia.Repositorio.ClientesRepositorio;
 import com.Panaderia.Repositorio.PedidoRepositorio;
 import com.Panaderia.Servicios.ClientesServicio;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,20 @@ public class ControladorAdminPedidos {
         return "AdminPedidos";
     }
 
+     @PostMapping("/editar/{id}")
+    @ResponseBody
+    public ResponseEntity<String> actualizarEstado(
+            @PathVariable Long id,
+            @RequestParam("estado") String estado
+    ) {
+        return pedidoRepository.findById(id).map(pedido -> {
+            pedido.setEstado(estado); // Actualizamos el estado del pedido
+            pedidoRepository.save(pedido);
+            return ResponseEntity.ok(estado); // Retornamos el nuevo estado del pedido
+        }).orElse(ResponseEntity.notFound().build());
+    }
+    
+    
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         agregarNombreUsuarioAlModelo(model);
@@ -45,7 +60,8 @@ public class ControladorAdminPedidos {
         return "redirect:/adminventas";
     }
 
-    @GetMapping("/editar/{id}")
+      // Formulario para editar un pedido
+     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
         agregarNombreUsuarioAlModelo(model);
         Pedido pedido = pedidoRepository.findById(id)
@@ -55,12 +71,9 @@ public class ControladorAdminPedidos {
         return "FormularioPedido";
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminarPedido(@PathVariable Long id) {
-        pedidoRepository.deleteById(id);
-        return "redirect:/adminventas";
-    }
-
+    
+    
+    
     private void agregarNombreUsuarioAlModelo(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 

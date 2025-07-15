@@ -20,15 +20,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const numeroPedidoCliente = index + 1;
             const totalPedido = pedido.items.reduce((acc, item) => acc + item.precioUnitario * item.cantidad, 0);
 
+            // Comienza a crear el HTML para el pedido
             const pedidoHTML = `
-                <div class="pedido-item">
+                <div class="pedido-item" id="pedido-${pedido.id}">
                     <div class="pedido-header">
                         <div class="pedido-id">
                             <i class="bi bi-receipt me-1"></i>
                             Pedido #${numeroPedidoCliente}
                         </div>
-                        <div class="pedido-status" style="background: ${pedido.estado === 'Confirmado' ? '#28a745' : '#ffc107'};">
-                            <i class="bi ${pedido.estado === 'Confirmado' ? 'bi-check-circle' : 'bi-hourglass-split'} me-1"></i>
+                        <div class="pedido-status" style="background: ${pedido.estado === 'Confirmado' ? '#28a745' : (pedido.estado === 'Cancelado' ? '#dc3545' : '#ffc107')}">
+                            <i class="bi ${pedido.estado === 'Confirmado' ? 'bi-check-circle' : (pedido.estado === 'Cancelado' ? 'bi-x-circle' : 'bi-hourglass-split')} me-1"></i>
                             ${pedido.estado}
                         </div>
                     </div>
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
 
                     <div class="btn-actions">
-                        ${pedido.estado !== 'Confirmado' ? `
+                        ${pedido.estado !== 'Confirmado' && pedido.estado !== 'Cancelado' ? `
                             <button class="btn btn-ver-detalle" onclick="confirmarPedido(${pedido.id})">
                                 <i class="bi bi-check2-circle"></i> Confirmar Pedido
                             </button>
@@ -71,9 +72,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <i class="bi bi-x-circle"></i> Cancelar Pedido
                             </button>
                             </button>
-                            <button class="btn btn-pdf">
-                                <i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF
-                            </button>`
+                            <button class="btn btn-pdf" onclick="descargarPDF(${pedido.id})">
+                                 <i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF
+                             </button>`
                         : ''}
                     </div>
                 </div>
@@ -90,15 +91,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 async function confirmarPedido(id) {
+      const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    
     if (!confirm(`¿Deseas confirmar el pedido?`)) return;
     try {
         const formData = new URLSearchParams();
         formData.append("estado", "Confirmado");
 
-        const res = await fetch(`/api/adminventas/editar/${id}`, {
+        const res = await fetch(`/adminventas/editar/${id}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/x-www-form-urlencoded",
+                 [header]: token
             },
             body: formData
         });
@@ -113,16 +118,43 @@ async function confirmarPedido(id) {
 
 // Cancelar pedido: llamada real al backend
 async function cancelarPedido(id) {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
     if (!confirm(`¿Estás seguro de cancelar el pedido?`)) return;
+
     try {
-        const res = await fetch(`/api/adminventas/eliminar/${id}`, {
-            method: "DELETE"
+        const res = await fetch(`/adminventas/editar/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                [header]: token
+            },
+            body: new URLSearchParams({ estado: "Cancelado" })
         });
 
         if (!res.ok) throw new Error("Error al cancelar el pedido.");
+
+        // Obtenemos la respuesta con el nuevo estado
+        const nuevoEstado = await res.text();
+
+        // Al cancelarse el pedido, eliminamos los botones de "Confirmar" y "Cancelar"
+        const pedidoItem = document.getElementById(`pedido-${id}`);
+        const btnActions = pedidoItem.querySelector('.btn-actions');
+        btnActions.innerHTML = ''; // Limpia los botones
+
+        // Cambiar el estado a "Cancelado" y mostrarlo
+        const statusElement = pedidoItem.querySelector('.pedido-status');
+        statusElement.style.background = '#dc3545'; // Rojo para indicar cancelado
+        statusElement.innerHTML = `<i class="bi bi-x-circle me-1"></i> ${nuevoEstado}`;
+
         alert("Pedido cancelado correctamente.");
-        location.reload();
+        
     } catch (err) {
         alert(err.message);
     }
+}
+function descargarPDF(idPedido) {
+  // Abre una nueva pestaña con la URL para descargar el PDF de ese pedido
+  window.open(`/adminpedidos/pdf/${idPedido}`, '_blank');
 }
